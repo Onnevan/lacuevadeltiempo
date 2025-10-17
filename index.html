@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>La Cueva del Tiempo — PoC · Versión LED guiada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0e; --bg-soft:#0f1116; --fg:#eaeaf0; --muted:#c2c2cf; --brand:#d1a75b; --accent:#72d3c4; --line:rgba(255,255,255,.10);
+      --max: 1040px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+    a{color:inherit}
+
+    /* Tipografía y composición vertical */
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+    h1,h2{font-family:Cinzel,serif;letter-spacing:.02em}
+    h1{font-size:clamp(40px,6vw,78px);line-height:1.04;margin:0 0 8px}
+    h2{font-size:clamp(28px,4vw,44px);line-height:1.15;margin:0 0 14px}
+    h3{font-size:22px;margin:0 0 10px}
+    p.lead{font-size:20px;color:var(--muted);margin:10px 0 0}
+    p{line-height:1.6}
+
+    /* Banners de sección (full-bleed) */
+    .banner{position:relative;min-height:52vh;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
+    .banner .bg{position:absolute;inset:0;background: #000 center/cover no-repeat;filter:brightness(.78) contrast(1.1) saturate(.9);transform:scale(1.05)}
+    .banner .shade{position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 60%, rgba(0,0,0,.05), rgba(0,0,0,.75))}
+    .banner .content{position:relative;z-index:2;padding:70px 0 60px}
+    .kicker{letter-spacing:.22em;text-transform:uppercase;color:var(--brand);font-weight:700;font-size:12px}
+
+    /* Bloques verticales tipo dossier */
+    section.block{padding:56px 0;border-top:1px solid var(--line)}
+    .columns{columns:2;column-gap:42px}
+    @media (max-width:1000px){.columns{columns:1}}
+
+    /* Listas con iconos (SVG inline) */
+    ul.clean{list-style:none;padding:0;margin:0}
+    ul.clean li{display:flex;gap:12px;align-items:flex-start;margin:10px 0;padding-left:2px}
+    .ico{width:22px;height:22px;flex:0 0 22px;display:grid;place-items:center;border-radius:8px;background:rgba(209,167,91,.15);border:1px solid rgba(209,167,91,.35)}
+    .ico svg{width:14px;height:14px;display:block}
+
+    /* Citas y notas */
+    .note{border-left:3px solid var(--accent);padding:10px 14px;background:rgba(114,211,196,.08);border-radius:8px;margin:14px 0;color:#cfe9e4}
+
+    /* Pie y print */
+    footer{padding:70px 0;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+    @media print{
+      body{background:#000}
+      .banner{min-height:40vh}
+    }
+  </style>
+</head>
+<body>
+  <!-- Portada -->
+  <header class="banner" style="min-height:82vh">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1581783898377-1c85bf937427?q=80&w=2400&auto=format&fit=crop');"></div>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="content wrap">
+      <div class="kicker">Prueba de Concepto · LED Volume</div>
+      <h1>La Cueva del Tiempo — PoC</h1>
+      <p class="lead">Versión LED guiada · Unreal Engine / Render en tiempo real · Experiencia colectiva sin gafas</p>
+    </div>
+  </header>
+
+  <!-- Resumen ejecutivo (bloque vertical) -->
+  <section class="block" id="resumen">
+    <div class="wrap">
+      <h2>Resumen ejecutivo</h2>
+      <p>Demostración técnica y escénica de una experiencia inmersiva colectiva con <strong>pantallas LED</strong> que responden en tiempo real al <strong>tracking del guía</strong>, generando sensación de profundidad compartida sin dispositivos XR. La PoC valida el flujo <em>tracking → Unreal → LED</em>, la sincronización de audio/efectos y la percepción de grupo compacto.</p>
+      <div class="columns" style="margin-top:10px">
+        <div>
+          <h3>Objetivos</h3>
+          <ul class="clean">
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span><div>Validar control de cámara por tracking del guía en UE5 con <strong>Late Update</strong>.</div></li>
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></span><div>Medir latencia end‑to‑end y estabilidad a <strong>≥60 FPS</strong>.</div></li>
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-5-9-5-9 5 9 5z"/></svg></span><div>Evaluar percepción de profundidad con grupo a ≤2 m del guía.</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Ventajas clave</h3>
+          <ul class="clean">
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 4 4"/></svg></span><div>Sin gafas, alta accesibilidad y flujo de público ágil.</div></li>
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12M6 12h12"/></svg></span><div>Formato modular por escenas con transiciones cinematográficas.</div></li>
+            <li><span class="ico"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><div>Operación simple y mantenimiento bajo frente a VR multiusuario.</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner selva -->
+  <section class="banner" aria-label="Selva prehistórica">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1502083728181-687546e7761d?q=80&w=2400&auto=format&fit=crop');"></div>
+    <div class="shade"></div>
+    <div class="content wrap">
+      <div class="kicker">Acto III · Transición</div>
+      <h2>Del subsuelo a la selva</h2>
+      <p class="lead">Cambio de luz, temperatura y atmósfera. El grupo sigue al guía; el entorno reacciona.</p>
+    </div>
+  </section>
+
+  <!-- Narrativa -->
+  <section class="block" id="narrativa">
+    <div class="wrap">
+      <h2>Narrativa de la PoC</h2>
+      <p>La escena representa la salida de una cueva húmeda hacia un claro tropical. El público, compacto alrededor del guía, percibe parallax coherente y pistas sensoriales físicas (viento, sonido, luz) sincronizadas con la imagen LED. No hay contacto físico con props; la interacción es visual y ambiental.</p>
+      <div class="columns">
+        <div>
+          <h3>Interacciones</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-8m0-4V4"/></svg></span><div>Gesto del guía que activa la <strong>liana virtual</strong>: hojas que caen, pequeño animal que huye.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"/></svg></span><div>Triggers por <strong>posición</strong> (zonas marcadas en el suelo) para transiciones.</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Efectos físicos</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c6-6 12 6 18 0"/></svg></span><div><strong>Viento</strong> leve con ráfagas sincronizadas.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg></span><div><strong>Luz</strong> direccional cálida en la transición a la selva.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg></span><div><strong>Audio espacial</strong> de insectos/agua para cohesionar el espacio.</div></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Diseño visual: evitar planos “imposibles” cerca de los bordes del LED, añadir niebla ligera y partículas para suavizar discrepancias de paralaje.</p>
+    </div>
+  </section>
+
+  <!-- Banner dinosaurio sobrevuelo -->
+  <section class="banner" aria-label="Pterosaurio">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1580651450321-b326d23a985c?q=80&w=2400&auto=format&fit=crop');"></div>
+    <div class="shade"></div>
+    <div class="content wrap">
+      <div class="kicker">Acto IV · WOW controlado</div>
+      <h2>Sobre nuestras cabezas</h2>
+      <p class="lead">Un pterosaurio desciende y el viento golpea el rostro del público. Ventiladores sincronizados.</p>
+    </div>
+  </section>
+
+  <!-- Técnica -->
+  <section class="block" id="tecnica">
+    <div class="wrap">
+      <h2>Arquitectura técnica</h2>
+      <div class="columns">
+        <div>
+          <h3>LED & Procesado</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/></svg></span><div>Pared LED 5–6 m × 2,5–3 m · pitch ≤2.6 mm · refresh ≥3840 Hz.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/></svg></span><div>Procesador en <strong>baja latencia</strong> y pipeline 10‑bit si es posible.</div></li>
+          </ul>
+          <h3>Tracking del guía</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span><div>Vive Mars CamTrack / Lighthouse / OptiTrack · Pose 6DoF vía Live Link.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12"/></svg></span><div>Calibración de origen y extrínseca del rig del guía.</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Render en Unreal 5.3+</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4h8v16H8z"/></svg></span><div>nDisplay/ICVFX, cámara anclada al guía, <strong>Late Update</strong> activado.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><div>Nanite/Lumen con budgets; SSR/Software Lumen si se requiere menos latencia.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-5-9-5-9 5 9 5z"/></svg></span><div>Audio espacial y FX físicos por OSC/DMX desde Blueprint maestro.</div></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Objetivo de latencia guía→LED: <strong>&lt; 50 ms</strong> (tracking 3–10 ms · render 16–18 ms @60 FPS · scan‑out 5–12 ms).</p>
+    </div>
+  </section>
+
+  <!-- Banner encuentro dinosaurio -->
+  <section class="banner" aria-label="Encuentro con dinosaurio">
+    <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=2400&auto=format&fit=crop');"></div>
+    <div class="shade"></div>
+    <div class="content wrap">
+      <div class="kicker">Acto V · Encuentro</div>
+      <h2>El gigante aparece</h2>
+      <p class="lead">Escala, tensión y subgraves. Vibración de suelo y silencio expectante.</p>
+    </div>
+  </section>
+
+  <!-- Plan PoC -->
+  <section class="block" id="poc">
+    <div class="wrap">
+      <h2>Plan de PoC — 3 semanas</h2>
+      <div class="columns">
+        <div>
+          <h3>Semana 1 · Preparación</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18"/></svg></span><div>Montaje LED + procesador, calibración y pruebas de señal.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><div>Tracking y Live Link; cámara UE5 vinculada al guía.</div></li>
+          </ul>
+          <h3>Semana 2 · Integración</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16"/></svg></span><div>Vegetación, iluminación, partículas, audio y FX físicos.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12"/></svg></span><div>Cues y transiciones; pruebas de estabilidad.</div></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Semana 3 · Ensayos</h3>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/></svg></span><div>Tests con grupo; medición de latencia y percepción.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-5-9-5-9 5 9 5z"/></svg></span><div>Ajuste de arte y documentación final (vídeo + informe).</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Presupuesto -->
+  <section class="block" id="presupuesto">
+    <div class="wrap">
+      <h2>Presupuesto estimado PoC</h2>
+      <div class="columns">
+        <div>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/></svg></span><div>LED + procesador (3 semanas): <strong>4.000–6.000 €</strong></div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><div>Tracking y sensores: <strong>1.500–2.000 €</strong></div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4h8v16H8z"/></svg></span><div>Workstation UE (si no se dispone): <strong>3.000–4.000 €</strong></div></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><div>Equipo técnico (15–20 jornadas): <strong>7.000–9.000 €</strong></div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg></span><div>Audio y FX físicos: <strong>1.000–2.000 €</strong></div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24  " fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/></svg></span><div><strong>Total estimado: 16.000–22.000 €</strong></div></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Valores orientativos; ajustar según especificaciones del LED, calendario y recursos existentes.</p>
+    </div>
+  </section>
+
+  <!-- Métricas -->
+  <section class="block" id="metricas">
+    <div class="wrap">
+      <h2>Métricas de éxito</h2>
+      <div class="columns">
+        <div>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12M6 12h12"/></svg></span><div>FPS ≥ 60 estables · Latencia guía→LED ≤ 50 ms.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><div>Desviación perceptiva: grupo a ≤2 m del guía sin disonancia notable.</div></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="clean">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/></svg></span><div>Pérdida de tracking y caídas de señal &lt; 1%.</div></li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-5-9-5-9 5 9 5z"/></svg></span><div>≥80% de feedback positivo (inmersión, claridad y confort visual).</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <footer>
+    <div class="wrap">© La Cueva del Tiempo — Documento de PoC (versión landing cinematográfica vertical)
+      <div style="margin-top:8px" class="note">Para exportar a PDF: navegador → Imprimir → Guardar como PDF. El diseño usa banners a sangre y bloques verticales legibles.</div>
+    </div>
+  </footer>
+</body>
+</html>
